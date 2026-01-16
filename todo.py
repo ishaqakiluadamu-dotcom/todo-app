@@ -36,6 +36,21 @@ def view_tasks():
             print(f"{i}. {task}")
 
 def delete_task():
+    if not tasks:
+        print("No tasks to delete.")
+        return
+
+    view_tasks()
+    try:
+        num = int(input("Enter task number to delete: "))
+        if 1 <= num <= len(tasks):
+            removed = tasks.pop(num - 1)
+            save_tasks(tasks)
+            print(f"Task '{removed}' deleted successfully!")
+        else:
+            print("Task number out of range.")
+    except ValueError:
+        print("Please enter a valid number.")def delete_task():
     view_tasks()
     try:
         num = int(input("Enter task number to delete: "))
