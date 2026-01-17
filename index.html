@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>To-Do App</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        input { padding: 5px; }
+        button { padding: 5px; }
+        li { margin: 5px 0; }
+    </style>
+</head>
+<body>
+
+<h2>My To-Do App</h2>
+
+<input type="text" id="taskInput" placeholder="Enter new task">
+<button onclick="addTask()">Add</button>
+
+<ul id="taskList"></ul>
+
+<script>
+const apiUrl = "/tasks";
+
+function loadTasks() {
+    fetch(apiUrl)
+    .then(res => res.json())
+    .then(data => {
+        const list = document.getElementById("taskList");
+        list.innerHTML = "";
+        data.forEach(task => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                ${task.title}
+                <button onclick="deleteTask(${task.id})">Delete</button>
+            `;
+            list.appendChild(li);
+        });
+    });
+}
+
+function addTask() {
+    const input = document.getElementById("taskInput");
+    fetch(apiUrl, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({title: input.value})
+    }).then(() => {
+        input.value = "";
+        loadTasks();
+    });
+}
+
+function deleteTask(id) {
+    fetch(apiUrl + "/" + id, {
+        method: "DELETE"
+    }).then(() => loadTasks());
+}
+
+loadTasks();
+</script>
+
+</body>
+</html>
